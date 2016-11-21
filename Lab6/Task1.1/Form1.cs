@@ -20,7 +20,15 @@ namespace Task1._1
 
 		private bool NameValidating(string text)
 		{
-			return !string.IsNullOrWhiteSpace(text);
+			text = text.Trim();
+			if (string.IsNullOrWhiteSpace(text))
+				return false;
+			for (int i = 0; i < text.Length; i++)
+			{
+				if (!char.IsLetter(text[i]))
+					return false;
+			}
+			return true;
 		}
 		private bool LettersValidating(string letters, int numOfLetters)
 		{
@@ -59,7 +67,7 @@ namespace Task1._1
 			{
 				textBox.BackColor = Color.LightCoral;
 				errorLabel.Visible = true;
-				errorLabel.Text = "Поле не может быть пустым!";
+				errorLabel.Text = "Поле не может быть пустым или содержать символы!";
 			}
 			else
 			{
