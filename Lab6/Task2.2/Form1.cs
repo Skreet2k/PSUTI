@@ -82,7 +82,7 @@ namespace Task2._2
 			{
 				textBox.BackColor = Color.LightCoral;
 				errorLabel.Visible = true;
-				errorLabel.Text = "Поле не может быть пустым!";
+				errorLabel.Text = "Поле не может быть пустым или содержать символы!";
 			}
 			else
 			{

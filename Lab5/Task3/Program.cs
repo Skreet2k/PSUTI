@@ -1,54 +1,60 @@
 ﻿using System;
+using System.Linq;
 
 namespace Task3
 {
+	public enum Distribution
+	{
+		ПРОП, ПЕРВ, ПОСЛ
+	}
 	internal class Program
 	{
+		public static string AmountOfDistribution(Distribution dirstrubutionType, decimal moneyBank, string amountsOfMonney)
+		{
+			var amountsOfMonneyArray = amountsOfMonney.Split(';').Select(x => decimal.Parse(x)).ToArray();
+			switch (dirstrubutionType)
+			{
+				case Distribution.ПРОП:
+					var percentByMonney = moneyBank/amountsOfMonneyArray.Sum();
+					for (var i = 0; i < amountsOfMonneyArray.Length; i++)
+					{
+						amountsOfMonneyArray[i] = Math.Round(amountsOfMonneyArray[i] * percentByMonney, 2, MidpointRounding.AwayFromZero); // округление до 2х знаков
+						moneyBank -= amountsOfMonneyArray[i]; // для вычисление оставшейся суммы после округлений					
+					}
+					amountsOfMonneyArray[amountsOfMonneyArray.Length - 1] += moneyBank; // добавление к последней суммы остатков от округлений;
+					break;
+				case Distribution.ПЕРВ:
+					for (var i = 0; i < amountsOfMonneyArray.Length; i++)
+					{
+						if (amountsOfMonneyArray[i] < moneyBank) // если денег в банке хватает не меняем выдаваемую сумму
+						{
+							moneyBank -= amountsOfMonneyArray[i];
+							continue;
+						}
+						amountsOfMonneyArray[i] = moneyBank; // если денег не хватает то отдаем все остатки
+						moneyBank = 0;
+					}
+					break;
+				case Distribution.ПОСЛ:
+					for (var i = amountsOfMonneyArray.Length - 1; i >= 0; i--)
+					{
+						if (amountsOfMonneyArray[i] < moneyBank) // если денег в банке хватает не меняем выдаваемую сумму
+						{
+							moneyBank -= amountsOfMonneyArray[i];
+							continue;
+						}
+						amountsOfMonneyArray[i] = moneyBank; // если денег не хватает то отдаем все остатки
+						moneyBank = 0;
+					}
+					break;
+
+			}
+			return string.Join(";", amountsOfMonneyArray);
+
+		}
 		private static void Main(string[] args)
 		{
-			Console.Write("Добро пожаловать в игру Street Fighter Console.\nВведите свое имя: ");
-			var playerName = Console.ReadLine();
-			var game = new Game(2, playerName, "Глупый компьютер");
-			var resultAction = new ActionEnum[2];
-
-			while (true)
-			{
-				Console.Write($"Ваше HP: {game.FirstPlayer.HealthPoint}\nПротивник HP: {game.SecondPlayer.HealthPoint}\n");
-				if (resultAction[0] != ActionEnum.Nothink)
-				{
-					Console.WriteLine("Результат вашего действия: " + resultAction[0]);
-				}
-				if (resultAction[1] != ActionEnum.Nothink)
-				{
-					Console.WriteLine("Результат действия бота: " + resultAction[1]);
-				}
-				Console.WriteLine(
-					"Действия:\n1.Атаковать в голову\n2.Атаковать в корпус\n3.Блокировать голову\n4.Блокировать корпус");
-				switch (Console.ReadLine())
-				{
-					case "1":
-						resultAction = game.DoAction(new FightAction(BodyPartEnum.Head, ActionEnum.Hit));
-						break;
-					case "2":
-						resultAction = game.DoAction(new FightAction(BodyPartEnum.Body, ActionEnum.Hit));
-						break;
-					case "3":
-						resultAction = game.DoAction(new FightAction(BodyPartEnum.Head, ActionEnum.Block));
-						break;
-					case "4":
-						resultAction = game.DoAction(new FightAction(BodyPartEnum.Body, ActionEnum.Block));
-						break;
-					default:
-						resultAction = game.DoAction(new FightAction(BodyPartEnum.Head, ActionEnum.Nothink));
-						break;
-				}
-				Console.Clear();
-				if (game.Winner != null)
-				{
-					break;
-				}
-			}
-			Console.WriteLine($"Победил {game.Winner}");
+			Console.WriteLine(AmountOfDistribution(Distribution.ПОСЛ, 10000, "1000;2000;3000;5000;8000;5000"));
 			Console.ReadLine();
 		}
 	}
