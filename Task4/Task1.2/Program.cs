@@ -11,6 +11,14 @@ namespace Task1._2
 		public static List<string> Method(string text)
 		{
 			text = text.Trim('.');
+			while (true)
+			{
+				if (!text.Contains("  "))
+				{
+					break;
+				}
+				text = text.Replace("  ", " ");
+			}
 			List<string> newWords = new List<string>();
 			string[] wordArray = text.Split(' ');
 			var temp = new StringBuilder();
