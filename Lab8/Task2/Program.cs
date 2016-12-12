@@ -39,7 +39,7 @@ namespace Task2
 			Console.WriteLine(@"Введите путь к файлу для сохранения (например: D:\Dev\1.txt)");
 			path = Console.ReadLine();
 			var newFile = File.Create(path);
-			newFile.Write(Encoding.UTF8.GetBytes(data), 0, data.Length);
+			newFile.Write(Encoding.Default.GetBytes(data), 0, data.Length);
 		}
 	}
 }

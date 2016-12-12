@@ -52,6 +52,7 @@ namespace Task2
 					}
 				}
 			}
+			CharStatistics = CharStatistics.OrderBy(pair => pair.Key).OrderByDescending(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
 
 		private string RemovingDuplicateSpaces(string text)
